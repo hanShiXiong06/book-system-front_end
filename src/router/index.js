@@ -6,6 +6,16 @@ const routes = [
   {
     path: "/",
     component: HomeView,
+    children: [
+      {
+        path: "/category",
+        component: () => import("@/views/admin/CategoryView.vue"),
+      },
+      {
+        path: "/add/category",
+        component: () => import("@/views/admin/AddCategoryView.vue"),
+      },
+    ],
   },
   {
     path: "/login",

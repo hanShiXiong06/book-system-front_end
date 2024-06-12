@@ -1,6 +1,8 @@
 // 模块化开发优势
 import axios from "axios";
 
+import { useAuthAdminStore } from "@/stores/admin/AuthAdminStore";
+
 // 生成一个实例
 const instance = axios.create({
   // baseURL: "http://localhost:3000",
@@ -11,7 +13,9 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     // 在发送请求之前做些什么
-    config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+    config.headers.Authorization = `Bearer ${
+      useAuthAdminStore().userinfo.token
+    }`;
     return config;
   },
   (error) => {
@@ -61,7 +65,9 @@ export const post = (url, data = {}, needAuth = true) => {
     config.headers["Content-Type"] = "multipart/form-data";
   } else if (needAuth) {
     // 如果不包含文件，且需要认证，则添加Authorization header
-    config.headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
+    config.headers["Authorization"] = `Bearer ${
+      useAuthAdminStore().userinfo.token
+    }`;
     config.headers["Content-Type"] = "application/json";
   } else {
     // 如果不需要认证，则只设置Content-Type为application/json
