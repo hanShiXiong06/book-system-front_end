@@ -77,12 +77,35 @@ export const post = (url, data = {}, needAuth = true) => {
   return instance.post(url, data, config);
 };
 // PUT请求封装，支持提交图片
-export const put = (url, data = {}) => {
-  return instance.put(url, data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+export const put = (url, data = {}, needAuth = true) => {
+  // 检查data中是否包含文件类型（通常为File对象）
+  let isFormData = false;
+  for (let key in data) {
+    if (data.hasOwnProperty(key) && data[key] instanceof File) {
+      isFormData = true;
+      break;
+    }
+  }
+
+  const config = {
+    headers: {},
+  };
+
+  if (isFormData) {
+    // 如果data包含文件，则使用multipart/form-data
+    config.headers["Content-Type"] = "multipart/form-data";
+  } else if (needAuth) {
+    // 如果不包含文件，且需要认证，则添加Authorization header
+    config.headers["Authorization"] = `Bearer ${
+      useAuthAdminStore().userinfo.token
+    }`;
+    config.headers["Content-Type"] = "application/json";
+  } else {
+    // 如果不需要认证，则只设置Content-Type为application/json
+    config.headers["Content-Type"] = "application/json";
+  }
+
+  return instance.put(url, data, config);
 };
 
 // DELETE请求封装

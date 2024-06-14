@@ -1,11 +1,14 @@
 <script setup>
 import { ref } from "vue"
-import { fetchCategory } from "@/api/admin/book";
-const tableData = ref([])
+import { fetchCategory, putCategory, delCategory } from "@/api/admin/book";
+import { ElMessage } from 'element-plus'
 
+const tableData = ref([])
+const editCategoryDialogVisible = ref(false)
+const categoryText = ref('')
+const currentCategoryId = ref(null)
 const _fetchCategory = () => {
     fetchCategory().then(res => {
-
         tableData.value = res.data.rows
     })
 }
@@ -13,8 +16,32 @@ const _fetchCategory = () => {
 
 // 修改 分类
 const edit = (cid) => {
-    console.log(cid);
+    editCategoryDialogVisible.value = true
+    currentCategoryId.value = cid
 }
+// 
+const _putCategory = async () => {
+
+    const reslut = await putCategory(currentCategoryId.value, { name: categoryText.value })
+    ElMessage({
+        message: '更新成功',
+        type: 'success',
+    })
+    editCategoryDialogVisible.value = false
+    _fetchCategory()
+}
+
+
+// 删除分类
+const del = async (cid) => {
+    const reslut = await delCategory(cid)
+    ElMessage({
+        message: '删除成功',
+        type: 'success',
+    })
+    _fetchCategory()
+}
+
 
 _fetchCategory()
 </script>
@@ -36,7 +63,13 @@ _fetchCategory()
             <el-table-column label="操作">
                 <template #default="{ row }">
                     <el-button @click="edit(row.cid)"> 修改</el-button>
-                    <el-button type="danger"> 删除</el-button>
+                    <el-popconfirm @confirm="del(row.cid)" title="你确定要删除他吗?">
+
+                        <template #reference>
+                            <el-button type="danger"> 删除</el-button>
+                        </template>
+
+                    </el-popconfirm>
                 </template>
             </el-table-column>
 
@@ -48,6 +81,17 @@ _fetchCategory()
                 @current-change="handleCurrentChange" />
         </template>
     </el-card>
+    <el-dialog v-model="editCategoryDialogVisible" title="修改分类" width="500" :before-close="handleClose">
+        <el-input v-model="categoryText" style="width: 240px" placeholder="Please input" />
+        <template #footer>
+            <div class="dialog-footer">
+                <el-button @click="editCategoryDialogVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="_putCategory">
+                    Confirm
+                </el-button>
+            </div>
+        </template>
+    </el-dialog>
 </template>
 <style scoped>
 .el-card {
