@@ -4,9 +4,7 @@ import { useAuthAdminStore } from "@/stores/admin/AuthAdminStore";
 import { useRouter } from "vue-router"
 
 const router = useRouter()
-fetchCategory().then(res => {
-    console.log(res);
-})
+
 const exit = () => {
     useAuthAdminStore().saveToken('')
     router.push('/login')
@@ -48,7 +46,7 @@ const exit = () => {
                                     </template>
                                     <el-menu-item-group>
                                         <el-menu-item index="1-1"> 添加图书 </el-menu-item>
-                                        <el-menu-item index="1-2">图书列表</el-menu-item>
+                                        <el-menu-item index="/book">图书列表</el-menu-item>
                                     </el-menu-item-group>
 
                                 </el-sub-menu>

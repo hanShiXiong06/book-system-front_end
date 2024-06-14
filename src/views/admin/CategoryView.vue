@@ -7,9 +7,18 @@ const tableData = ref([])
 const editCategoryDialogVisible = ref(false)
 const categoryText = ref('')
 const currentCategoryId = ref(null)
+
+const pages = ref({
+    total: 0,
+    pageSize: 10,
+    currentPage: 1
+})
+
 const _fetchCategory = () => {
     fetchCategory().then(res => {
         tableData.value = res.data.rows
+        console.log(res.data.count);
+        pages.value.total = res.data.count
     })
 }
 
@@ -56,6 +65,7 @@ _fetchCategory()
     </el-breadcrumb>
 
     <el-card>
+        {{ pages }}
 
         <el-table :data="tableData" border style="width: 100%">
             <el-table-column prop="cid" label="分类id" width="80" />
@@ -75,10 +85,9 @@ _fetchCategory()
 
         </el-table>
         <template #footer>
-            <el-pagination v-model:current-page="currentPage4" v-model:page-size="pageSize4"
-                :page-sizes="[100, 200, 300, 400]" :small="small" :disabled="disabled" :background="background"
-                layout="total, sizes, prev, pager, next, jumper" :total="400" @size-change="handleSizeChange"
-                @current-change="handleCurrentChange" />
+            <el-pagination v-model:current-page="pages.currentPage" v-model:page-size="pages.pageSize"
+                :page-sizes="[10, 20, 30, 40]" :small="small" layout="total, sizes, prev, pager, next, jumper"
+                :total="pages.total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </template>
     </el-card>
     <el-dialog v-model="editCategoryDialogVisible" title="修改分类" width="500" :before-close="handleClose">

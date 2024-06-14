@@ -15,6 +15,10 @@ const routes = [
         path: "/add/category",
         component: () => import("@/views/admin/AddCategoryView.vue"),
       },
+      {
+        path: "/book",
+        component: () => import("@/views/admin/BookView.vue"),
+      },
     ],
   },
   {
