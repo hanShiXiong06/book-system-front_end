@@ -45,32 +45,25 @@ instance.interceptors.response.use(
 export const get = (url, params = {}) => {
   return instance.get(url, { params });
 };
-
 export const post = (url, data = {}, needAuth = true) => {
-  // 检查data中是否包含文件类型（通常为File对象）
-  let isFormData = false;
-  for (let key in data) {
-    if (data.hasOwnProperty(key) && data[key] instanceof File) {
-      isFormData = true;
-      break;
-    }
-  }
+  let isFormData = data instanceof FormData;
 
   const config = {
     headers: {},
   };
 
   if (isFormData) {
-    // 如果data包含文件，则使用multipart/form-data
+    // 如果 data 是 FormData 对象，则设置 Content-Type 为 multipart/form-data
     config.headers["Content-Type"] = "multipart/form-data";
   } else if (needAuth) {
-    // 如果不包含文件，且需要认证，则添加Authorization header
-    config.headers["Authorization"] = `Bearer ${
-      useAuthAdminStore().userinfo.token
-    }`;
+    // 如果需要认证，且 data 不是 FormData 对象，则设置 Content-Type 为 application/json 并添加 Authorization 头
+    const token = useAuthAdminStore().userinfo.token;
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
     config.headers["Content-Type"] = "application/json";
   } else {
-    // 如果不需要认证，则只设置Content-Type为application/json
+    // 如果不需要认证，则只设置 Content-Type 为 application/json
     config.headers["Content-Type"] = "application/json";
   }
 
@@ -78,30 +71,24 @@ export const post = (url, data = {}, needAuth = true) => {
 };
 // PUT请求封装，支持提交图片
 export const put = (url, data = {}, needAuth = true) => {
-  // 检查data中是否包含文件类型（通常为File对象）
-  let isFormData = false;
-  for (let key in data) {
-    if (data.hasOwnProperty(key) && data[key] instanceof File) {
-      isFormData = true;
-      break;
-    }
-  }
+  let isFormData = data instanceof FormData;
 
   const config = {
     headers: {},
   };
 
   if (isFormData) {
-    // 如果data包含文件，则使用multipart/form-data
+    // 如果 data 是 FormData 对象，则设置 Content-Type 为 multipart/form-data
     config.headers["Content-Type"] = "multipart/form-data";
   } else if (needAuth) {
-    // 如果不包含文件，且需要认证，则添加Authorization header
-    config.headers["Authorization"] = `Bearer ${
-      useAuthAdminStore().userinfo.token
-    }`;
+    // 如果需要认证，且 data 不是 FormData 对象，则设置 Content-Type 为 application/json 并添加 Authorization 头
+    const token = useAuthAdminStore().userinfo.token;
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
     config.headers["Content-Type"] = "application/json";
   } else {
-    // 如果不需要认证，则只设置Content-Type为application/json
+    // 如果不需要认证，则只设置 Content-Type 为 application/json
     config.headers["Content-Type"] = "application/json";
   }
 

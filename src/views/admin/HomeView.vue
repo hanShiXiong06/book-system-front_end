@@ -45,7 +45,7 @@ const exit = () => {
                                         <span> 图书管理 </span>
                                     </template>
                                     <el-menu-item-group>
-                                        <el-menu-item index="1-1"> 添加图书 </el-menu-item>
+                                        <el-menu-item index="/add/book"> 添加图书 </el-menu-item>
                                         <el-menu-item index="/book">图书列表</el-menu-item>
                                     </el-menu-item-group>
 

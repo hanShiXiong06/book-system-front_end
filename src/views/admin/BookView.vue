@@ -40,7 +40,8 @@ watchEffect(() => {
             <el-table-column label="图片">
                 <template #default="{ row }">
                     <!-- {{ row }} -->
-                    <el-image style="width: 100px; height: 100px" :src="row.img" fit="contain" />
+                    <el-image style="width: 100px; height: 100px" :src="'http://localhost:3000/' + row.img"
+                        fit="contain" />
                 </template>
             </el-table-column>
         </el-table>
